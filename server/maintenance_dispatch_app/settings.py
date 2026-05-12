@@ -123,7 +123,7 @@ REST_FRAMEWORK = {
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000" # To change later if necessary
+    "http://localhost:3000" # Note: update later if necessary
 ]
 
 SESSION_COOKIE_HTTPONLY = True
