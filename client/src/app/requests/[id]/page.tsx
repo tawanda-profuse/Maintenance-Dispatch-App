@@ -3,14 +3,13 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowLeft, Save, User } from "lucide-react";
+import { ArrowLeft, Save, User, CheckCircle2, X } from "lucide-react";
 
 import api from "@/lib/api";
 import Sidebar from "@/components/Sidebar";
 import Loader from "@/components/Loader";
 import AuthGuard from "@/components/AuthGuard";
 import { toast } from "react-toastify";
-import Cookies from "js-cookie";
 import { useAuthStore } from "@/stores/auth-store";
 
 interface Request {
@@ -45,16 +44,15 @@ export default function RequestDetailsPage() {
   const [updating, setUpdating] = useState(false);
   const [assigning, setAssigning] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [showStatusModal, setShowStatusModal] = useState(false);
+  const [statusUpdating, setStatusUpdating] = useState(false);
+  const { user: currentUser } = useAuthStore();
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     status: "",
     assigned_to_id: "",
   });
-  const csrfToken1 = Cookies.get("csrftoken");
-  const csrfToken2 = useAuthStore.getState().csrfToken || "";
-
-  console.log({csrfToken1, csrfToken2})
 
   const fetchRequestDetails = useCallback(async () => {
     try {
@@ -130,6 +128,27 @@ export default function RequestDetailsPage() {
       setAssigning(false);
     }
   };
+
+  const handleStatusToggle = async (newStatus: string) => {
+    setStatusUpdating(true);
+    try {
+      await api.put(`/requests/${requestId}/`, {
+        title: request?.title,
+        description: request?.description,
+        status: newStatus,
+      });
+      await fetchRequestDetails();
+      toast.success(`Request marked as ${newStatus}`);
+      setShowStatusModal(false);
+    } catch (error) {
+      console.error("Failed to update status:", error);
+      toast.error("Failed to update status");
+    } finally {
+      setStatusUpdating(false);
+    }
+  };
+
+  const isMaintenanceStaff = currentUser?.role === "Maintenance Staff";
 
   if (loading) {
     return (
@@ -232,7 +251,7 @@ export default function RequestDetailsPage() {
                   />
                 </div>
 
-                <div>
+                {currentUser?.role === "Property Manager" && <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
                     Status
                   </label>
@@ -247,7 +266,7 @@ export default function RequestDetailsPage() {
                     <option value="In Progress">In Progress</option>
                     <option value="Completed">Completed</option>
                   </select>
-                </div>
+                </div>}
 
                 <button
                   type="submit"
@@ -326,6 +345,83 @@ export default function RequestDetailsPage() {
               </div>
             )}
           </motion.div>
+
+          {/* Status Toggle Modal for Maintenance Staff */}
+          {showStatusModal && isMaintenanceStaff && request && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+              onClick={() => setShowStatusModal(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.95 }}
+                animate={{ scale: 1 }}
+                className="bg-white rounded-3xl p-8 max-w-md w-full shadow-lg"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-2xl font-bold text-slate-900">Update Status</h3>
+                  <button
+                    onClick={() => setShowStatusModal(false)}
+                    className="p-2 hover:bg-slate-100 rounded-xl transition cursor-pointer"
+                  >
+                    <X size={20} className="text-slate-500" />
+                  </button>
+                </div>
+
+                <p className="text-slate-600 mb-6">
+                  Current status: <span className="font-semibold">{request.status}</span>
+                </p>
+
+                <div className="space-y-3">
+                  {request.status !== "In Progress" && (
+                    <button
+                      onClick={() => handleStatusToggle("In Progress")}
+                      disabled={statusUpdating}
+                      className="w-full btn-primary py-3 cursor-pointer disabled:opacity-50"
+                    >
+                      {statusUpdating ? "Updating..." : "Mark as In Progress"}
+                    </button>
+                  )}
+                  {request.status !== "Completed" && (
+                    <button
+                      onClick={() => handleStatusToggle("Completed")}
+                      disabled={statusUpdating}
+                      className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-medium transition cursor-pointer disabled:opacity-50"
+                    >
+                      {statusUpdating ? "Updating..." : "Mark as Completed"}
+                    </button>
+                  )}
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+
+          {/* Status Toggle Button for Maintenance Staff */}
+          {isMaintenanceStaff && (request.status === "In Progress" || request.status === "Completed") && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="card p-6 bg-blue-50 border-2 border-blue-200"
+            >
+              <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                <CheckCircle2 size={18} className="text-blue-600" />
+                Update Status
+              </h3>
+              <p className="text-slate-600 mb-4">
+                You can toggle the request status between In Progress and Completed.
+              </p>
+              <button
+                onClick={() => setShowStatusModal(true)}
+                className="btn-primary cursor-pointer"
+              >
+                Change Status
+              </button>
+            </motion.div>
+          )}
 
           {/* Assignment Card */}
           {request.status === "Pending" && (

@@ -26,6 +26,8 @@ export default function Sidebar() {
     try {
       await api.post("/logout/");
       logout();
+      // Brief delay to ensure session is cleared on server
+      await new Promise(resolve => setTimeout(resolve, 100));
       router.push("/login");
       toast.success("Logged out successfully");
     } catch (error) {
@@ -70,10 +72,10 @@ export default function Sidebar() {
           <Link
             key={item.href}
             href={item.href}
-            className={`group flex items-center gap-4 rounded-2xl px-3 py-3 text-slate-700 transition duration-300 ${
-              isOpen
-                ? "border border-transparent bg-white hover:border-blue-200 hover:bg-blue-50 hover:text-slate-900"
-                : "justify-center bg-white/95 hover:bg-blue-50"
+            className={`group flex items-center gap-4 rounded-2xl px-3 py-3 text-slate-700 transition duration-300 hover:bg-blue-100 ${
+              isOpen || router.pathname === item.href
+                ? "border border-transparent bg-white hover:border-blue-200 hover:text-slate-900"
+                : "justify-center bg-white/95"
             }`}
             title={isOpen ? "" : item.label}
           >

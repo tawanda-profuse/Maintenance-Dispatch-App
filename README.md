@@ -11,6 +11,25 @@ This project uses Django Session Authentication. After login, Django creates a s
 
 Django CSRF middleware is enabled. The frontend reads the csrftoken cookie and sends it using the X-CSRFToken header for all unsafe HTTP methods: POST, PUT, PATCH, DELETE. This prevents CSRF attacks while maintaining secure cookie-based authentication.
 
+## Running with CSRF & Cookies in Development
+
+When developing locally with a separate frontend and backend:
+
+1. **Django settings** are configured for cross-origin cookies:
+   - `CSRF_COOKIE_SAMESITE = "None"` — allows cookies across origins
+   - `CSRF_TRUSTED_ORIGINS` includes `http://localhost:3000` — trusts the frontend origin
+   - Both frontend and backend run on `localhost` during dev
+
+2. **Frontend Axios client** (`client/src/lib/api.ts`):
+   - Sends `withCredentials: true` to include session & CSRF cookies
+   - Sets `xsrfCookieName: "csrftoken"` and `xsrfHeaderName: "X-CSRFToken"`
+   - Fetches CSRF token from cookies or Zustand auth store as fallback
+
+3. **After logout and re-login:**
+   - Always call `GET /api/login/` to refresh the session and CSRF token
+   - Zustand auth store is cleared on logout to prevent stale data
+   - New session cookie is issued on successful `POST /api/login/`
+
 ## Permission Classes
 
 ### CanAccessRequest
@@ -27,14 +46,15 @@ Rules:
 
 Maintenance Staff:
 
-- Cannot assign tasks
-- Cannot access tasks assigned to others
-- Can only update status
+- Cannot assign tasks.
+- Cannot access tasks assigned to others.
+- Can only update status.
 
 Residents:
 
-- Cannot update or reassign requests
-- Cannot access other residents' requests
+- Cannot update or reassign requests.
+- Cannot access other residents' requests.
+- Can create a maintenance request.
 
 All permissions are enforced server-side.
 
@@ -55,6 +75,7 @@ Create the following environment variables:
 | Method | Endpoint                     | Description              |
 | ------ | ---------------------------- | ------------------------ |
 | POST   | `/api/login/`                | Login                    |
+| GET    | `/api/login/`                | View login JSON response |
 | POST   | `/api/logout/`               | Logout                   |
 | GET    | `/api/requests/`             | List accessible requests |
 | POST   | `/api/requests/`             | Create request           |
@@ -67,7 +88,7 @@ Create the following environment variables:
 
 **First, you need to create the Super User**:
 
-1. Navigate to the server directory: 
+1. Navigate to the 'server' directory:
 
 ```bash
 cd server
@@ -75,17 +96,18 @@ cd maintenance_dispatch
 python manage.py createsuperuser
 ```
 
-2. Django will prompt you for Username Email address, Password, and Password (again).
+2. Django will prompt you for Username, Email address, Password, and Password (again).
 
 3. After successful creation, you’ll see: "Superuser created successfully".
 
 **To create other users**:
 
-1. From the terminal: `python manage.py shell`
+1. Access the shell from the terminal: `python manage.py shell`
 
-2. Then writing the following Python code after the '**>>>**' symbol:
+2. Then writing the following Python code, line by line after the '**>>>**' symbol:
 
 ```Python
+# This line must always be written first
 from django.contrib.auth.models import User, Group
 
 # Create a group for staff members

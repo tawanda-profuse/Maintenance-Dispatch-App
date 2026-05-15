@@ -13,10 +13,13 @@ import { useAuthStore } from "@/stores/auth-store";
 
 export default function DashboardPage() {
   const user = useAuthStore((state) => state.user);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!isAuthenticated) return;
+
     const fetchRequests = async () => {
       try {
         const response = await api.get("/requests/");
@@ -29,7 +32,7 @@ export default function DashboardPage() {
       }
     };
     fetchRequests();
-  }, []);
+  }, [isAuthenticated]);
 
   const pending = requests.filter(
     (r: { status: string }) => r.status === "Pending",

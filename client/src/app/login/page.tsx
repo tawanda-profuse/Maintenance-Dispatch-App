@@ -8,6 +8,7 @@ import { LogIn } from "lucide-react";
 import api from "@/lib/api";
 import { getCSRFToken } from "@/lib/csrf";
 import { useAuthStore } from "@/stores/auth-store";
+import { toast } from "react-toastify";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -56,7 +57,16 @@ export default function LoginPage() {
       const { csrf_token, user } = response.data;
 
       login(user, csrf_token);
+
+      // Validate the new authenticated session before navigating.
+      const authenticated = await checkAuth();
+      if (!authenticated) {
+        setError("Failed to establish authenticated session. Please try again.");
+        return;
+      }
+
       router.push("/dashboard");
+      toast.success("Logged in successfully");
     } catch (error: unknown) {
       setError("Invalid username or password");
       console.log(error);
