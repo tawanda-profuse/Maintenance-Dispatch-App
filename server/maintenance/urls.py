@@ -3,6 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from .views import (
     MaintenanceRequestViewSet,
+    UserViewSet,
     LoginView,
     LogoutView
 )
@@ -12,6 +13,11 @@ router.register(
     r"requests",
     MaintenanceRequestViewSet,
     basename="requests"
+)
+router.register(
+    r"users",
+    UserViewSet,
+    basename="users"
 )
 
 urlpatterns = [

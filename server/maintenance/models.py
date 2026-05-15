@@ -20,6 +20,14 @@ class MaintenanceRequest(models.Model):
         related_name="assigned_requests"
     )
 
+    assigned_to = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="maintenance_requests"
+    )
+
     status = models.CharField(
         max_length=50,
         choices=STATUS_CHOICES,

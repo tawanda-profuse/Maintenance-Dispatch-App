@@ -61,3 +61,68 @@ Create the following environment variables:
 | GET    | `/api/requests/{id}/`        | View single request      |
 | PUT    | `/api/requests/{id}/`        | Update request           |
 | POST   | `/api/requests/{id}/assign/` | Assign request           |
+| GET    | `/api/users/`                | Assign request           |
+
+## Create Roles & Users
+
+**First, you need to create the Super User**:
+
+1. Navigate to the server directory: 
+
+```bash
+cd server
+cd maintenance_dispatch
+python manage.py createsuperuser
+```
+
+2. Django will prompt you for Username Email address, Password, and Password (again).
+
+3. After successful creation, you’ll see: "Superuser created successfully".
+
+**To create other users**:
+
+1. From the terminal: `python manage.py shell`
+
+2. Then writing the following Python code after the '**>>>**' symbol:
+
+```Python
+from django.contrib.auth.models import User, Group
+
+# Create a group for staff members
+staff_group, _ = Group.objects.get_or_create(
+    name="MaintenanceStaff"
+)
+
+# Create a manager user
+manager = User.objects.create_user(
+    username="manager",
+    password="password",
+    first_name="First",
+    last_name="Last",
+    email="email@example.com"
+)
+
+manager.is_staff = True
+manager.save()
+
+# Create a staff user
+staff = User.objects.create_user(
+    username="staff",
+    password="password",
+    first_name="First",
+    last_name="Last",
+    email="email@example.com"
+)
+
+# Add the staff member into the group
+staff.groups.add(staff_group)
+
+# Create a resident
+resident = User.objects.create_user(
+    username="resident",
+    password="password",
+    first_name="First",
+    last_name="Last",
+    email="email@example.com"
+)
+```

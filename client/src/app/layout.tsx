@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ToastContainer } from "react-toastify";
+import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
   title: "Maintenance Dispatch App",
@@ -14,7 +16,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <Navbar />
+        {children}
+
+        <ToastContainer
+          position="top-right"
+          autoClose={5000} // Close after 5 seconds
+          hideProgressBar={false}
+          newestOnTop={true}
+          closeOnClick
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+      </body>
     </html>
   );
 }
