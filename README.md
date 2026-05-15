@@ -32,6 +32,18 @@ When developing locally with a separate frontend and backend:
 
 ## Permission Classes
 
+### IsPropertyManager
+
+Allows access only to Property Managers (`is_staff=True`).
+
+### IsResident
+
+Allows access only to Residents who are not Property Managers or Maintenance Staff.
+
+### IsMaintenanceStaff
+
+Allows access only to users in the `MaintenanceStaff` group.
+
 ### CanAccessRequest
 
 Implements object-level permissions.
