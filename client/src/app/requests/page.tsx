@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ClipboardList, Clock3, CheckCircle2, Plus, X } from "lucide-react";
+import { ClipboardList, Clock3, CheckCircle2, Plus, X, Trash2 } from "lucide-react";
 
 import api from "@/lib/api";
 import RequestCard from "@/components/RequestCard";
@@ -38,8 +38,13 @@ export default function RequestsPage() {
     description: "",
   });
   const [creating, setCreating] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteRequestId, setDeleteRequestId] = useState<number | null>(null);
+  const [deleteRequestTitle, setDeleteRequestTitle] = useState("");
+  const [deleting, setDeleting] = useState(false);
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
+  const isManager = user?.role === "Property Manager";
 
   const fetchRequests = useCallback(async () => {
     try {
@@ -79,6 +84,31 @@ export default function RequestsPage() {
 
   const handleViewDetails = (id: number) => {
     router.push(`/requests/${id}`);
+  };
+
+  const openDeleteModal = (requestId: number, title: string) => {
+    setDeleteRequestId(requestId);
+    setDeleteRequestTitle(title);
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteRequestId) return;
+
+    setDeleting(true);
+    try {
+      await api.delete(`/requests/${deleteRequestId}/`);
+      setShowDeleteModal(false);
+      setDeleteRequestId(null);
+      setDeleteRequestTitle("");
+      await fetchRequests();
+      toast.success("Request deleted successfully");
+    } catch (error) {
+      console.error("Failed to delete request:", error);
+      toast.error("Failed to delete request");
+    } finally {
+      setDeleting(false);
+    }
   };
 
   const pending = requests.filter((r) => r.status === "Pending").length;
@@ -248,11 +278,57 @@ export default function RequestsPage() {
                   onClick={() => handleViewDetails(request.id)}
                   title="View details"
                 >
+                  {isManager && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openDeleteModal(request.id, request.title);
+                      }}
+                      className="absolute right-4 top-4 z-10 inline-flex items-center gap-2 rounded-full bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 shadow-sm hover:bg-red-100 cursor-pointer"
+                    >
+                      <Trash2 size={14} /> Delete
+                    </button>
+                  )}
                   <RequestCard request={request} />
                 </motion.div>
               ))
             )}
           </div>
+
+          {showDeleteModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+              <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-xl">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-bold text-slate-900">Confirm Delete</h2>
+                  <button
+                    onClick={() => setShowDeleteModal(false)}
+                    className="rounded-full p-2 text-slate-500 hover:bg-slate-100"
+                  >
+                    <X />
+                  </button>
+                </div>
+                <p className="text-slate-600 mb-6">
+                  Are you sure you want to delete request "{deleteRequestTitle}"?
+                </p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={handleConfirmDelete}
+                    disabled={deleting}
+                    className="btn-primary flex-1 cursor-pointer z-1000"
+                    title="Delete this request"
+                  >
+                    {deleting ? "Deleting..." : "Delete Request"}
+                  </button>
+                  <button
+                    onClick={() => setShowDeleteModal(false)}
+                    className="flex-1 rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-700 hover:bg-slate-50 cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </main>
     </AuthGuard>

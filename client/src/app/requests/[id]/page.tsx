@@ -46,7 +46,10 @@ export default function RequestDetailsPage() {
   const [editMode, setEditMode] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [statusUpdating, setStatusUpdating] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const { user: currentUser } = useAuthStore();
+  const isManager = currentUser?.role === "Property Manager";
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -133,8 +136,6 @@ export default function RequestDetailsPage() {
     setStatusUpdating(true);
     try {
       await api.put(`/requests/${requestId}/`, {
-        title: request?.title,
-        description: request?.description,
         status: newStatus,
       });
       await fetchRequestDetails();
@@ -145,6 +146,22 @@ export default function RequestDetailsPage() {
       toast.error("Failed to update status");
     } finally {
       setStatusUpdating(false);
+    }
+  };
+
+  const handleDeleteRequest = async () => {
+    if (!request) return;
+
+    setDeleteLoading(true);
+    try {
+      await api.delete(`/requests/${requestId}/`);
+      toast.success("Request deleted successfully");
+      router.push("/requests");
+    } catch (error) {
+      console.error("Failed to delete request:", error);
+      toast.error("Failed to delete request");
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -198,17 +215,27 @@ export default function RequestDetailsPage() {
             Back to Requests
           </button>
 
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <h1 className="text-4xl font-black">Request Details</h1>
               <p className="text-slate-400 mt-2">Request #{request.id}</p>
             </div>
-            <button
-              onClick={() => setEditMode(!editMode)}
-              className="btn-primary cursor-pointer"
-            >
-              {editMode ? "Cancel Edit" : "Edit Request"}
-            </button>
+            <div className="flex flex-wrap gap-3">
+              {isManager && (
+                <button
+                  onClick={() => setShowDeleteModal(true)}
+                  className="bg-red-200 px-3 py-2 font-semibold text-red-700 shadow-sm hover:bg-red-300 cursor-pointer rounded-xl"
+                >
+                  Delete Request
+                </button>
+              )}
+              <button
+                onClick={() => setEditMode(!editMode)}
+                className="btn-primary cursor-pointer"
+              >
+                {editMode ? "Cancel Edit" : "Edit Request"}
+              </button>
+            </div>
           </div>
         </motion.div>
 
@@ -394,6 +421,53 @@ export default function RequestDetailsPage() {
                       {statusUpdating ? "Updating..." : "Mark as Completed"}
                     </button>
                   )}
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+
+          {showDeleteModal && isManager && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+              onClick={() => setShowDeleteModal(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.95 }}
+                animate={{ scale: 1 }}
+                className="bg-white rounded-3xl p-8 max-w-md w-full shadow-lg"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-2xl font-bold text-slate-900">Delete Request</h3>
+                  <button
+                    onClick={() => setShowDeleteModal(false)}
+                    className="p-2 hover:bg-slate-100 rounded-xl transition cursor-pointer"
+                  >
+                    <X size={20} className="text-slate-500" />
+                  </button>
+                </div>
+
+                <p className="text-slate-600 mb-6">
+                  Are you sure you want to permanently delete this request? This action cannot be undone.
+                </p>
+
+                <div className="flex flex-col gap-3">
+                  <button
+                    onClick={handleDeleteRequest}
+                    disabled={deleteLoading}
+                    className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-medium transition cursor-pointer disabled:opacity-50"
+                  >
+                    {deleteLoading ? "Deleting..." : "Delete Request"}
+                  </button>
+                  <button
+                    onClick={() => setShowDeleteModal(false)}
+                    className="w-full border border-slate-200 text-slate-700 py-3 rounded-xl font-medium transition cursor-pointer"
+                  >
+                    Cancel
+                  </button>
                 </div>
               </motion.div>
             </motion.div>
