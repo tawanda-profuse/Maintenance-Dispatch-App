@@ -72,15 +72,19 @@ All permissions are enforced server-side.
 
 ## Environment Variable Setup
 
-Create the following environment variables:
+Create the following environment variables for the server-side application:
 
-- **DATABASE_NAME**
-- **DATABASE_USER**
-- **DATABASE_PASSWORD**
-- **DATABASE_HOST**
-- **DATABASE_PORT**
-- **SECRET_KEY**
+- **DATABASE_NAME**: Name of the database.
+- **DATABASE_USER**: Database username.
+- **DATABASE_PASSWORD**: Password to your database.
+- **DATABASE_HOST**: Postgres database host, e.g. 5432.
+- **DATABASE_PORT**: Postgres database port.
+- **SECRET_KEY**: Secret key generate by Django.
 - **DEBUG** - This is a boolean value which should be set to **`False`** in production.
+
+Create the following environment variables for the frontend application:
+
+- **NEXT_PUBLIC_API_BASE_URL**: URL of the server-side application.
 
 ## API Endpoints
 
@@ -161,3 +165,25 @@ resident = User.objects.create_user(
     email="email@example.com"
 )
 ```
+
+## Running the Application
+
+### Installing the frontend Next.js application
+
+```bash
+cd client
+npm install
+```
+
+Run the frontend application using: `npm run dev`. It should run at **http://localhost:3000**.
+
+### Installing and running the backend application
+
+```bash
+cd server
+pip install
+```
+
+Next, activate the virtual environment: `venv\Scripts\activate`.
+
+Then run the app using: `python manage.py runserver`. It runs at **http://localhost:8000**
