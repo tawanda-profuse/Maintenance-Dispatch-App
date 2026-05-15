@@ -135,7 +135,7 @@ export default function RequestDetailsPage() {
   const handleStatusToggle = async (newStatus: string) => {
     setStatusUpdating(true);
     try {
-      await api.put(`/requests/${requestId}/`, {
+      await api.patch(`/requests/${requestId}/`, {
         status: newStatus,
       });
       await fetchRequestDetails();

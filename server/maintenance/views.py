@@ -128,7 +128,13 @@ class MaintenanceRequestViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         user = request.user
         
-        if not (user.is_staff or instance.resident == user):
+        if not (
+            user.is_staff 
+            or instance.resident == user
+            or (
+                user.groups.filter(name="MaintenanceStaff").exists()
+                and instance.assigned_to == user
+            )):
             return Response(
                 {"error": "You don't have permission to update this request"},
                 status=403
