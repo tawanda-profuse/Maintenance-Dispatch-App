@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   ChevronLeft,
   ChevronRight,
@@ -21,13 +21,14 @@ export default function Sidebar() {
   const { isOpen, toggle } = useSidebarStore();
   const { logout } = useAuthStore();
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleLogout = async () => {
     try {
       await api.post("/logout/");
       logout();
       // Brief delay to ensure session is cleared on server
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
       router.push("/login");
       toast.success("Logged out successfully");
     } catch (error) {
@@ -68,14 +69,18 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex flex-1 md:flex-col gap-3 overflow-y-auto px-2 md:py-4 py-2 justify-between">
-        {navItems.map((item) => (
+        {navItems.map((item) => {
+          const isActive = pathname === item.href;
+          return (
           <Link
             key={item.href}
             href={item.href}
-            className={`group flex items-center gap-4 rounded-2xl px-3 py-3 text-slate-700 transition duration-300 hover:bg-blue-100 ${
-              isOpen || router.pathname === item.href
-                ? "border border-transparent bg-white hover:border-blue-200 hover:text-slate-900"
-                : "justify-center bg-white/95"
+            className={`group flex items-center md:justify-center gap-4 rounded-2xl px-3 py-3 text-slate-700 transition duration-300 hover:bg-blue-100 ${
+              isActive
+                ? "border border-transparent bg-blue-200 hover:text-slate-900"
+                : " bg-white/95"
+            } ${
+              isActive ? "bg-blue-100 text-blue-600 font-semibold" : ""
             }`}
             title={isOpen ? "" : item.label}
           >
@@ -84,10 +89,10 @@ export default function Sidebar() {
               {item.label}
             </span>
           </Link>
-        ))}
+        )})}
         <button
           onClick={handleLogout}
-          className={`group flex items-center gap-4 rounded-2xl px-3 py-3 text-red-700 transition duration-300 cursor-pointer ${
+          className={`group flex items-center md:justify-center gap-4 rounded-2xl px-3 py-3 text-red-700 transition duration-300 cursor-pointer ${
             isOpen
               ? "border border-transparent bg-red-50 hover:border-red-200 hover:bg-red-100"
               : "justify-center bg-red-50 transition hover:bg-red-100"

@@ -81,6 +81,7 @@ Create the following environment variables:
 | POST   | `/api/requests/`             | Create request           |
 | GET    | `/api/requests/{id}/`        | View single request      |
 | PUT    | `/api/requests/{id}/`        | Update request           |
+| DELETE | `/api/requests/{id}/`        | Delete request           |
 | POST   | `/api/requests/{id}/assign/` | Assign request           |
 | GET    | `/api/users/`                | Assign request           |
 
