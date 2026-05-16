@@ -35,6 +35,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'maintenance_dispatch_app.urls'
@@ -71,6 +72,11 @@ DATABASES = {
     }
 }
 
+# Enable SSL only in production
+if not DEBUG:
+    DATABASES['default']['OPTIONS'] = {
+        'sslmode': 'require',
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -123,6 +129,7 @@ REST_FRAMEWORK = {
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
+    "https://maintenance-dispatch.xrthemc.workers.dev",
     "http://localhost:3000" # Note: update later if necessary
 ]
 
