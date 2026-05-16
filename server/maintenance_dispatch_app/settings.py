@@ -1,5 +1,8 @@
 from pathlib import Path
 from decouple import config
+from urllib.parse import urlparse
+
+DATABASE_URL = config("DATABASE_URL", default='')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -67,22 +70,41 @@ WSGI_APPLICATION = 'maintenance_dispatch_app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DATABASE_NAME', 'maintenance_app_db'),
-        'USER': config('DATABASE_USER', 'postgres'),
-        'PASSWORD': config('DATABASE_PASSWORD', default=''),
-        'HOST': config('DATABASE_HOST', '127.0.0.1'),
-        'PORT': config('DATABASE_PORT', '5432'),
+if DATABASE_URL:
+    # PRODUCTION (Render + Neon)
+    tmp = urlparse(DATABASE_URL)
+
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": tmp.path.lstrip("/"),
+            "USER": tmp.username,
+            "PASSWORD": tmp.password,
+            "HOST": tmp.hostname,
+            "PORT": tmp.port or 5432,
+            "OPTIONS": {
+                "sslmode": "require",
+            },
+        }
     }
-}
+
+else:
+    # LOCAL DEVELOPMENT
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": config("DATABASE_NAME", "maintenance_app_db"),
+            "USER": config("DATABASE_USER", "postgres"),
+            "PASSWORD": config("DATABASE_PASSWORD", ""),
+            "HOST": config("DATABASE_HOST", "127.0.0.1"),
+            "PORT": config("DATABASE_PORT", "5432"),
+        }
+    }
 
 # Enable SSL only in production
 if not DEBUG:
     DATABASES['default']['OPTIONS'] = {
         'sslmode': 'require',
-        'options': '-c search_path=public'
     }
 
 # Password validation
