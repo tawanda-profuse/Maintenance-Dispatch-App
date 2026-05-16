@@ -82,6 +82,7 @@ DATABASES = {
 if not DEBUG:
     DATABASES['default']['OPTIONS'] = {
         'sslmode': 'require',
+        'options': '-c search_path=public'
     }
 
 # Password validation
