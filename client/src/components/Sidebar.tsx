@@ -39,7 +39,7 @@ export default function Sidebar() {
 
   return (
     <aside
-      className={`md:absolute md:left-6 md:top-6 md:bottom-6 md:w-auto fixed bottom-0 left-0 w-full overflow-hidden md:rounded-3xl border border-gray-300 bg-slate-50 shadow-lg transition-all duration-300 ease-out z-1000 ${
+      className={`md:fixed md:left-6 md:top-6 md:bottom-6 md:w-auto fixed bottom-0 left-0 w-full overflow-hidden md:rounded-3xl border border-gray-300 bg-slate-50 shadow-lg transition-all duration-300 ease-out z-1000 ${
         isOpen ? "md:w-[320px]" : "md:w-20"
       }`}
     >
