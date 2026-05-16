@@ -172,4 +172,5 @@ CSRF_COOKIE_SAMESITE = "None"
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
+    "https://maintenance-dispatch.xrthemc.workers.dev",
 ]
