@@ -17,7 +17,6 @@ interface AuthState {
   login: (user: AuthUser, csrfToken: string) => void;
   logout: () => void;
   checkAuth: () => Promise<boolean>;
-  isHydrated: boolean;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -26,7 +25,6 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       user: null,
       csrfToken: null,
-      isHydrated: false,
 
       login: (user, csrfToken) => {
         set({ isAuthenticated: true, user, csrfToken });
@@ -35,8 +33,6 @@ export const useAuthStore = create<AuthState>()(
       logout: () => {
         set({ isAuthenticated: false, user: null, csrfToken: null });
       },
-
-      setHydrated: () => set({ isHydrated: true }),
 
       checkAuth: async () => {
         try {

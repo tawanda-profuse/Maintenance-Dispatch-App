@@ -40,18 +40,15 @@ export default function UsersPage() {
   }, []);
 
   useEffect(() => {
-  if (!isHydrated) return;
-
-  if (!user) {
-    router.push("/login");
-    return;
-  }
-
-  if (user.role !== "Property Manager") {
-    router.push("/dashboard");
-    toast.info("This page is only for Managers");
-  }
-}, [user, isHydrated, router]);
+    const initialize = () => {
+      if (user?.role !== "Property Manager") {
+        router.push("/dashboard");
+        toast.info("This page is only for Managers");
+        return;
+      }
+    };
+    initialize();
+  }, [user]);
 
   useEffect(() => {
     fetchUsers();
