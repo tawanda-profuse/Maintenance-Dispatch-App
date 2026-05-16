@@ -26,7 +26,6 @@ export default function UsersPage() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
-  const isHydrated = useAuthStore((state) => state.isHydrated);
 
   const fetchUsers = useCallback(async () => {
     try {
