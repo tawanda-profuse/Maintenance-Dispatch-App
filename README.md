@@ -168,7 +168,7 @@ resident = User.objects.create_user(
 
 ## Running the Application
 
-### Installing the frontend Next.js application
+### Installing the Frontend Next.js Application
 
 ```bash
 cd client
@@ -177,7 +177,7 @@ npm install
 
 Run the frontend application using: `npm run dev`. It should run at **http://localhost:3000**.
 
-### Installing and running the backend application
+### Installing and Running the Backend Application
 
 ```bash
 cd server
@@ -187,3 +187,9 @@ pip install
 Next, activate the virtual environment: `venv\Scripts\activate`.
 
 Then run the app using: `python manage.py runserver`. It runs at **http://localhost:8000**
+
+### Running Server Side Tests
+
+First activate the virtual environment using this command: `venv\Scripts\activate`.
+
+Next, run the `pytest` command from the virtual environment. This runs the Pytest test suite located in the **/server/maintenance/tests.py** file.
