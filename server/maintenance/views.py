@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 
 from .models import MaintenanceRequest
-from .serializers import MaintenanceRequestSerializer, UserSerializer
+from .serializers import MaintenanceRequestSerializer, UserSerializer, FullUserSerializer
 from .permissions import ( CanAccessRequest, IsPropertyManager)
 
 
@@ -202,6 +202,14 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         return User.objects.filter(
             groups__name="MaintenanceStaff"
         ).distinct()
+
+class ManagerUserViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = FullUserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Return all users
+        return User.objects.filter().distinct()
 
 
 

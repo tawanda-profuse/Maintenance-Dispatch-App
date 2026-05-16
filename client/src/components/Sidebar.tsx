@@ -6,6 +6,7 @@ import {
   ClipboardList,
   Home,
   LogOut,
+  Users,
 } from "lucide-react";
 import { useSidebarStore } from "@/lib/sidebar-store";
 import { useAuthStore } from "@/stores/auth-store";
@@ -15,6 +16,7 @@ import { toast } from "react-toastify";
 const navItems = [
   { label: "Dashboard", href: "/dashboard", icon: <Home /> },
   { label: "Requests", href: "/requests", icon: <ClipboardList /> },
+  { label: "Users", href: "/users", icon: <Users /> },
 ];
 
 export default function Sidebar() {

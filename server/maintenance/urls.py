@@ -5,7 +5,8 @@ from .views import (
     MaintenanceRequestViewSet,
     UserViewSet,
     LoginView,
-    LogoutView
+    LogoutView,
+    ManagerUserViewSet
 )
 
 router = DefaultRouter()
@@ -18,6 +19,11 @@ router.register(
     r"users",
     UserViewSet,
     basename="users"
+)
+router.register(
+    r"manager-users",
+    ManagerUserViewSet,
+    basename="manager-users"
 )
 
 urlpatterns = [

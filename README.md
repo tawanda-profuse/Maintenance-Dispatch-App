@@ -99,7 +99,8 @@ Create the following environment variables for the frontend application:
 | PUT    | `/api/requests/{id}/`        | Update request           |
 | DELETE | `/api/requests/{id}/`        | Delete request           |
 | POST   | `/api/requests/{id}/assign/` | Assign request           |
-| GET    | `/api/users/`                | Assign request           |
+| GET    | `/api/users/`                | View staff users only    |
+| GET    | `/api/manager-users/`        | View all users           |
 
 ## Create Roles & Users
 

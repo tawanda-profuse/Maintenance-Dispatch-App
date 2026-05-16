@@ -9,6 +9,36 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ["id", "username"]
 
+class FullUserSerializer(serializers.ModelSerializer):
+    role = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "is_staff",
+            "is_superuser",
+            "email",
+            "role",
+        ]
+
+    def get_role(self, obj):
+        # Default role
+        role = "Resident"
+
+        # Staff takes highest priority
+        if obj.is_staff:
+            return "Property Manager"
+
+        # Cached in memory (no extra DB hit)
+        if any(group.name == "MaintenanceStaff" for group in obj.groups.all()):
+            return "Maintenance Staff"
+
+        return role
+
 
 class MaintenanceRequestSerializer(serializers.ModelSerializer):
 
