@@ -30,7 +30,7 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <Link href="/" className="text-2xl font-black text-slate-900">
-              Maintenance<span className="text-blue-600">Dispatch</span>
+              Maintenance<span className="text-(--primary)">Dispatch</span>
             </Link>
           </div>
 

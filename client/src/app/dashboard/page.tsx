@@ -100,7 +100,7 @@ export default function DashboardPage() {
                 </h2>
                 <p className="mt-2 text-sm text-slate-500">{user?.role}</p>
               </div>
-              <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-blue-500/10 text-2xl font-black text-blue-600">
+              <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-(--primary-light) text-2xl font-black text-(--primary)">
                 {user?.first_name && user?.last_name ? `${user?.first_name?.[0]}${user?.last_name?.[0]}` : user?.username?.[0].toUpperCase()}
               </div>
             </div>

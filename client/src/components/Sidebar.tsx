@@ -60,10 +60,10 @@ export default function Sidebar() {
           aria-label={isOpen ? "Collapse sidebar" : "Expand sidebar"}
           title={isOpen ? "Collapse sidebar" : "Expand sidebar"}
           onClick={toggle}
-          className={`group flex items-center gap-4 rounded-2xl px-3 py-3 text-slate-700 transition duration-300 cursor-pointer border border-slate-700 ${
+          className={`group flex items-center gap-4 rounded-2xl px-3 py-3 text-slate-700 transition duration-300 cursor-pointer border border-slate-700 hover:border-(--primary-light) ${
             isOpen
-              ? "bg-white  hover:bg-blue-50 hover:text-slate-900"
-              : "justify-center bg-white/95 hover:bg-blue-50"
+              ? "bg-white  hover:bg-(--primary-light) hover:text-slate-900"
+              : "justify-center bg-white/95 hover:bg-(--primary-light)"
           }`}
         >
           {isOpen ? <ChevronLeft /> : <ChevronRight />}
@@ -74,24 +74,25 @@ export default function Sidebar() {
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           return (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`group flex items-center md:justify-center gap-4 rounded-2xl px-3 py-3 text-slate-700 transition duration-300 hover:bg-blue-100 ${
-              isActive
-                ? "border border-transparent bg-blue-200 hover:text-slate-900"
-                : " bg-white/95"
-            } ${
-              isActive ? "bg-blue-100 text-blue-600 font-semibold" : ""
-            }`}
-            title={isOpen ? "" : item.label}
-          >
-            <span className="text-lg">{item.icon}</span>
-            <span className={`${isOpen ? "block" : "hidden"} font-medium`}>
-              {item.label}
-            </span>
-          </Link>
-        )})}
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`group flex items-center md:justify-center gap-4 rounded-2xl px-3 py-3 text-slate-700 transition duration-300 hover:bg-(--primary-light) ${
+                isActive
+                  ? "border border-transparent bg-(--primary) text-white hover:text-slate-900"
+                  : " bg-white/95"
+              } ${
+                isActive ? "bg-(--primary) text-(--primary) font-semibold" : ""
+              }`}
+              title={isOpen ? "" : item.label}
+            >
+              <span className="text-lg">{item.icon}</span>
+              <span className={`${isOpen ? "block" : "hidden"} font-medium`}>
+                {item.label}
+              </span>
+            </Link>
+          );
+        })}
         <button
           onClick={handleLogout}
           className={`group flex items-center md:justify-center gap-4 rounded-2xl px-3 py-3 text-red-700 transition duration-300 cursor-pointer ${

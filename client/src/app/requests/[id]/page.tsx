@@ -482,7 +482,7 @@ export default function RequestDetailsPage() {
               className="card p-6 bg-blue-50 border-2 border-blue-200"
             >
               <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
-                <CheckCircle2 size={18} className="text-blue-600" />
+                <CheckCircle2 size={18} className="text-(--primary)" />
                 Update Status
               </h3>
               <p className="text-slate-600 mb-4">

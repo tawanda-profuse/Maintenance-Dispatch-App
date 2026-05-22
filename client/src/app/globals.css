@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+:root {
+  --primary: purple;
+  --secondary: gold;
+  --primary-light: violet;
+}
+
 body {
   background: white;
   color: black;
@@ -11,9 +17,9 @@ body {
 }
 
 .input {
-  @apply w-full bg-gray-200 border border-gray-700 rounded-xl px-4 py-3 text-black outline-none focus:border-blue-500;
+  @apply w-full bg-gray-200 border border-gray-700 rounded-xl px-4 py-3 text-black outline-none focus:border-(--primary);
 }
 
 .btn-primary {
-  @apply bg-blue-600 hover:bg-blue-700 text-white transition-all duration-300 rounded-xl px-5 py-3 font-semibold;
+  @apply bg-(--primary) hover:bg-(--primary-light) text-white transition-all duration-300 rounded-xl px-5 py-3 font-semibold;
 }

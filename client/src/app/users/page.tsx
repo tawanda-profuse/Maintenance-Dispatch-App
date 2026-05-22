@@ -141,7 +141,7 @@ export default function UsersPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="relative mx-auto border-collapse w-full"
               >
-                <motion.thead className="text-blue-500 text-left text-xl">
+                <motion.thead className="text-(--primary) text-left text-xl">
                   <tr className="border-b-2 border-gray-500">
                     <th className="p-2">Username</th>
                     <th className="p-2">First Name</th>

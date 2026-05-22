@@ -15,7 +15,7 @@ export default function HomePage() {
         >
           <h1 className="text-6xl font-black leading-tight text-slate-900">
             Maintenance
-            <span className="text-blue-500"> Dispatch </span>
+            <span className="text-(--primary)"> Dispatch </span>
             Portal
           </h1>
 

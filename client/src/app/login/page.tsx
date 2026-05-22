@@ -83,12 +83,12 @@ export default function LoginPage() {
         className="card w-full max-w-md p-8"
       >
         <div className="flex items-center gap-3 mb-8">
-          <div className="bg-blue-600 p-3 rounded-xl text-white">
+          <div className="bg-(--primary) p-3 rounded-xl text-white">
             <LogIn />
           </div>
 
           <div>
-            <h1 className="text-3xl font-bold text-blue-600">Welcome Back</h1>
+            <h1 className="text-3xl font-bold text-(--primary)">Welcome Back</h1>
             <p className="text-slate-900 text-sm">Sign into your account</p>
           </div>
         </div>
