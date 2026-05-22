@@ -7,6 +7,23 @@ tasks.
 
 This project uses Django Session Authentication. After login, Django creates a secure session cookie that is automatically sent by the browser on future requests. Frontend requests must include **credentials: "include"** to allow browser cookies to be sent.
 
+- Live Demo Link (Deployed with Cloudflare): https://maintenance-dispatch.xrthemc.workers.dev/
+- API URL (Deployed with Render): https://maintenance-dispatch-api-anft.onrender.com/
+
+You may use the login credentials below.
+
+**Admin User** :
+- username: admin
+- password: admin123
+
+**Resident User** :
+- username: resident
+- password: password
+
+**Maintenance Staff User** :
+- username: staff
+- password: password
+
 ## CSRF Protection
 
 Django CSRF middleware is enabled. The frontend reads the csrftoken cookie and sends it using the X-CSRFToken header for all unsafe HTTP methods: POST, PUT, PATCH, DELETE. This prevents CSRF attacks while maintaining secure cookie-based authentication.
